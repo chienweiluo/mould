@@ -8195,10 +8195,10 @@ yallist@^3.0.0, yallist@^3.0.2, yallist@^3.0.3:
   resolved "https://registry.npm.taobao.org/yallist/download/yallist-3.1.1.tgz#dbb7daf9bfd8bac9ab45ebf602b8cbad0d5d08fd"
   integrity sha1-27fa+b/YusmrRev2ArjLrQ1dCP0=
 
-zod@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.npm.taobao.org/zod/-/zod-1.0.9.tgz#c3d1010f0d20f1e6747a6bcb0903269d63b90d86"
-  integrity sha512-1sfiVveSSKGphn++TkLPFbDkMyLoeZPNpI8PjhH7bKdUNIa+E8a6GMGVNtMJIs/GwTbe8de0eBiG2ocnfDNGDg==
+zod@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-1.2.3.tgz#7b644e46ce98dd6d39efc9087425123c0185627a"
+  integrity sha512-AvkisTblVRNbd4QN8cGR7rbHEf9N/46BBd5Ne6vzcRsvoMP0LQAMyQOlluaUawj+83gjota4ir0RE+dzgOZQHQ==
 
 zustand@^2.2.3:
   version "2.2.3"

@@ -41,7 +41,7 @@ export type ComponentProps = z.TypeOf<typeof zodComponentProps>
 
 export type Component = {
     type: string
-    props: ComponentProps
+    props: object
     children?: Component[]
 }
 

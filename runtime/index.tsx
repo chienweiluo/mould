@@ -20,7 +20,7 @@ export const runtime = (moulds: { [key: string]: Mould }) => {
                 ...rest
             }: {
                 __mouldId: ID
-            } & ComponentProps,
+            } & object,
             ref
         ) => {
             const __mouldProps = moulds[__mouldId]
