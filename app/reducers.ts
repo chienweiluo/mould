@@ -34,6 +34,7 @@ import {
     handleToggleViews,
     handleDisConnectScopeToKit,
     handleConnectRelation,
+    handleUpdateRelationMap,
 } from './appShell'
 
 export default () => [
@@ -73,4 +74,5 @@ export default () => [
     handleToggleViews,
     handleDisConnectScopeToKit,
     handleConnectRelation,
+    handleUpdateRelationMap,
 ]

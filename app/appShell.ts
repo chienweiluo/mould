@@ -14,7 +14,7 @@ import {
 } from './types'
 import { initialData, pathToString, viewPathToString } from './utils'
 import nanoid from 'nanoid'
-import { filter, remove, find } from 'lodash'
+import { filter, remove, find, each, reduce, toPairs } from 'lodash'
 
 type SelectComponentAction = { pathes: Path[] }
 const SELECT_COMPONENT = 'SELECT_COMPONENT'
@@ -964,72 +964,110 @@ export const handleToggleViews = handleAction<EditorState, ToggleViewsAction>(
     initialData
 )
 
-type AddViewRelationAction = {
-    viewId: string
-    relation: ViewRelaion
-}
-
-const ADD_VIEW_RELATION = 'ADD_VIEW_RELATION'
-export const addViewRelation = createAction<AddViewRelationAction>(
-    ADD_VIEW_RELATION
-)
-export const handleAddViewRelation = handleAction<
-    EditorState,
-    AddViewRelationAction
->(
-    ADD_VIEW_RELATION,
-    (state, { payload: { viewId, relation } }) => {
-        if (!state.viewRelationsMap[viewId]) {
-            state.viewRelationsMap[viewId] = []
-        } else {
-            state.viewRelationsMap[viewId].push(relation)
-        }
-        return state
-    },
-    initialData
-)
-
 type ConnectRelation = {
     viewId: string
-    position: string
 }
 
 const CONNECT_RELATION = 'CONNECT_RELATION'
 export const connectRelation = createAction<ConnectRelation>(CONNECT_RELATION)
 export const handleConnectRelation = handleAction<EditorState, ConnectRelation>(
     CONNECT_RELATION,
-    (state, { payload: { viewId, position } }) => {
+    (state, { payload: { viewId } }) => {
         const [from, to] = state.connectingRelation
 
-        if (!from.view) {
-            state.connectingRelation = [{ view: viewId, position }]
-        } else {
-            if (from.view === viewId) {
-                state.connectingRelation = [
-                    { view: '', position: '' },
-                    { view: '', position: '' },
-                ]
-            } else {
-                state.connectingRelation = [
-                    ...state.connectingRelation,
-                    { view: viewId, position },
-                ]
+        if (from) {
+            if (viewId !== from) {
+                state.connectingRelation[1] = viewId
 
-                if (!state.viewRelationsMap[from.view]) {
-                    state.viewRelationsMap[from.view] = []
+                if (!state.viewRelationsMap[from]) {
+                    state.viewRelationsMap[from] = []
                 }
-                state.viewRelationsMap[from.view].push({
+                state.viewRelationsMap[from].push({
                     targetId: `archer-${viewId}`,
-                    sourceAnchor: from.position,
-                    targetAnchor: position,
                 })
+            }
 
-                state.connectingRelation = [
-                    { view: '', position: '' },
-                    { view: '', position: '' },
-                ]
+            state.connectingRelation = []
+        } else {
+            state.connectingRelation[0] = viewId
+        }
+
+        return state
+    },
+    initialData
+)
+
+// for auto get the connection archer position
+type UpdateRelationMap = {
+    viewId: string
+}
+
+const UPDATE_RELATIONMAP = 'UPDATE_RELATIONMAP'
+export const UpdateRelationMap = createAction<UpdateRelationMap>(
+    UPDATE_RELATIONMAP
+)
+export const handleUpdateRelationMap = handleAction<
+    EditorState,
+    UpdateRelationMap
+>(
+    UPDATE_RELATIONMAP,
+    (state, { payload: { viewId } }) => {
+        const { viewRelationsMap, views } = state
+        const getAnchor = ({ source, target }) => {
+            let sourceAnchor = ''
+            let targetAnchor = ''
+            if (target.y < source.y) {
+                sourceAnchor = 'top'
+                targetAnchor = 'bottom'
+            } else {
+                if (target.x > source.x) {
+                    sourceAnchor = 'right'
+                    targetAnchor = 'left'
+                } else {
+                    sourceAnchor = 'left'
+                    targetAnchor = 'right'
+                }
+            }
+
+            return {
+                sourceAnchor,
+                targetAnchor,
             }
         }
+
+        each(toPairs(viewRelationsMap), ([curViewId, curRelations]) => {
+            const self = views[viewId]
+
+            if (curViewId === viewId) {
+                each(curRelations, (relation) => {
+                    const targetId = relation.targetId.split('archer-')[1]
+                    relation.sourceAnchor = getAnchor({
+                        source: self,
+                        target: views[targetId],
+                    }).sourceAnchor
+                    relation.targetAnchor = getAnchor({
+                        source: self,
+                        target: views[targetId],
+                    }).targetAnchor
+                })
+            } else {
+                const source = views[curViewId]
+
+                each(curRelations, (relation) => {
+                    if (relation.targetId === `archer-${viewId}`) {
+                        relation.sourceAnchor = getAnchor({
+                            source,
+                            target: self,
+                        }).sourceAnchor
+                        relation.targetAnchor = getAnchor({
+                            source,
+                            target: self,
+                        }).targetAnchor
+                    }
+                })
+            }
+        })
+
         return state
     },
     initialData

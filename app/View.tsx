@@ -11,7 +11,7 @@ import { View as ViewType, EditorState, Vector, Path, Component } from './types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useGesture } from 'react-use-gesture'
 import dynamic from 'next/dynamic'
-import { Play, Pause } from 'react-feather'
+import { Play, Pause, Share2 } from 'react-feather'
 import {
     useIsSelectedMould,
     useIsSelectedState,
@@ -27,6 +27,7 @@ import {
     removeInput,
     selectComponent,
     connectRelation,
+    UpdateRelationMap,
 } from './appShell'
 import { Box, Text, Input } from '@modulz/radix'
 import EditingMould from './EditingMould'
@@ -61,7 +62,7 @@ export const View = ({
     onMove: ({ isMoving }) => void
 }) => {
     const dispatch = useDispatch()
-    const { views, testWorkspace, connectingRelation, selection } = useSelector(
+    const { views, testWorkspace, selection } = useSelector(
         (state: EditorState) => state
     )
     const view = views[viewId]
@@ -142,8 +143,6 @@ export const View = ({
         setReady(true)
     }, [viewRef.current])
 
-    const relation = connectingRelation
-
     return (
         <>
             {selected && ready && (
@@ -186,6 +185,8 @@ export const View = ({
                                     y: parseFloat(target.style.top),
                                 })
                             )
+
+                            dispatch(UpdateRelationMap({ viewId }))
                         }}
                         onDragStart={() => {
                             onMove({ isMoving: true })
@@ -203,6 +204,7 @@ export const View = ({
                                 })
                             )
                             onMove({ isMoving: false })
+                            dispatch(UpdateRelationMap({ viewId }))
                         }}
                         elementGuidelines={otherViews.map((v) =>
                             document.getElementById(`view-${v}`)
@@ -371,22 +373,19 @@ export const View = ({
                         }
                     }}
                 >
-                    {selection &&
-                        ['top', 'left', 'right', 'bottom'].map((position) => (
-                            <div
-                                className={`archer-trigger ${position} ${
-                                    relation[0].view === viewId &&
-                                    relation[0].position === position
-                                        ? 'active'
-                                        : 'inactive'
-                                } ${selected ? 'selected' : ''}`}
-                                onClick={() => {
-                                    dispatch(
-                                        connectRelation({ viewId, position })
-                                    )
-                                }}
-                            ></div>
-                        ))}
+                    {selection && (
+                        <div
+                            className={`link-trigger ${
+                                selected ? 'primary' : ''
+                            }`}
+                            onClick={() => {
+                                dispatch(connectRelation({ viewId }))
+                                dispatch(UpdateRelationMap({ viewId }))
+                            }}
+                        >
+                            <Share2 color={selected ? '#4af' : '#aaa'}></Share2>
+                        </div>
+                    )}
                     <div
                         style={{
                             cursor: 'grab',

@@ -1,40 +1,15 @@
-.archer-trigger {
-    $pointSize: 10px;
-    $offset: $pointSize / 2 + 1;
-    $pointColor: #4af;
-
+.link-trigger {
     position: absolute;
-    width: $pointSize;
-    height: $pointSize;
-    background-color: #aaa;
+    display: flex;
+    border: 1px solid #aaa;
+    padding: 5px;
     border-radius: 50%;
+    left: 0;
+    bottom: -50px;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    &.top {
-        left: 50%;
-        top: -$offset;
-        transform: translateX(-50%);
-    }
-    &.bottom {
-        left: 50%;
-        bottom: -$offset;
-        transform: translateX(-50%);
-    }
-    &.left {
-        top: 50%;
-        left: -$offset;
-        transform: translateY(-50%);
-    }
-    &.right {
-        top: 50%;
-        right: -$offset;
-        transform: translateY(-50%);
-    }
-
-    &.active {
-        background-color: darken($pointColor, 10%);
-    }
-
-    &.selected {
-        background-color: $pointColor;
+    &.primary {
+        border-color: #4af;
     }
 }

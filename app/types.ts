@@ -119,13 +119,10 @@ export type InspectorProps<T, Option = {}> = {
 
 export type Inspector<T, Option = {}> = SFC<InspectorProps<T, Option>>
 
-export type ConnectingRelation = {
-    view: string
-    position: 'top' | 'bottom' | 'left' | 'right' | ''
-}[]
+export type ConnectingRelation = ID[]
 
 export type ViewRelaion = {
     targetId: string
-    sourceAnchor: 'top' | 'bottom' | 'left' | 'right'
-    targetAnchor: 'top' | 'bottom' | 'left' | 'right'
+    sourceAnchor?: 'top' | 'bottom' | 'left' | 'right'
+    targetAnchor?: 'top' | 'bottom' | 'left' | 'right'
 }

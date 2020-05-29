@@ -43,7 +43,6 @@ export const handleZoomWorkspace = handleAction<
     ZOOM_WORKSPACE,
     (state, action) => {
         state.testWorkspace.zoom = action.payload.zoom
-
         return state
     },
     initialData
@@ -178,7 +177,7 @@ export const Workspace = ({ views, x, y, id, zoom = 1 }: WorkspaceType) => {
 
                 getArcherStyle({ isMoving: false })
                 setViewCacheKey(zoom)
-                zoomWorkspace({ zoom })
+                dispatch(zoomWorkspace({ zoom }))
             }}
         >
             <Box
